@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.content.negotiation)
     implementation(libs.ktor.searializtion)
     implementation(libs.kotlinx.serailizaton.json)
+    implementation(libs.androidx.google.fonts)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

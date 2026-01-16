@@ -35,7 +35,7 @@ androidx-ktor-client-android = { group = "io.ktor", name = "ktor-client-android"
 androidx-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
 ktor-searializtion = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
 kotlinx-serailizaton-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializaton_json" }
-androidx-google-fonts = { group ="andriodx.compose:ui", name="ui-text-google-fonts", version.ref="fonts"}
+androidx-google-fonts = { group ="androidx.compose.ui", name="ui-text-google-fonts", version.ref="fonts"}
 
 
 [plugins]
