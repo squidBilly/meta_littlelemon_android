@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.Surface
 import com.snowyfox.littlelemonexpress.ui.screens.OnBoardingScreen
 import com.snowyfox.littlelemonexpress.ui.theme.LittleLemonExpressTheme
 
@@ -13,7 +14,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LittleLemonExpressTheme {
-                OnBoardingScreen()
+                Surface {
+                    OnBoardingScreen()
+                }
             }
         }
     }

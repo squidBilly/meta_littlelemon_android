@@ -1,16 +1,16 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
-import android.annotation.SuppressLint
+import android.R.attr.onClick
 import android.text.TextUtils
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -54,41 +57,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
+import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
+import com.snowyfox.littlelemonexpress.ui.theme.RegularWhite
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingScreen() {
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = DarkGreens,
-                    titleContentColor = DarkGreens
+                    titleContentColor = ButtonYellow,
                 ),
                 title = {
-                    Box(
-                        modifier = Modifier
-                            .background(DarkGreens),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "OnBoarding",
-                            style = TextStyle(
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center,
-                            ),
-
-                        )
-                    }
+                    Text(
+                        "Onboarding",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    )
                 },
             )
         },
-        containerColor = Color.White
+        containerColor = RegularWhite
     ) { paddingValues ->
         var email by remember { mutableStateOf(" ") }
         var firstName by remember { mutableStateOf(" ") }
@@ -122,13 +117,12 @@ fun OnBoardingScreen() {
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-
                     Text(
                         "Let's get to know you",
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 32.sp,
-                            color = Color.White
+                            fontSize = 24.sp,
+                            color = ButtonYellow
                         ),
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -152,14 +146,28 @@ fun OnBoardingScreen() {
                         .focusRequester(focusRequester),
                     value = firstName,
                     onValueChange = { firstName = it },
-                    label = { Text("First Name") },
-                    placeholder = { Text("please enter a first name") },
+                    label = { Text("First Name",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Light,
+                            color = Color.Red
+                        )
+                    ) },
+                    placeholder = {
+                        Text(
+                            "please enter a first name",)
+                    },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = DarkGreens,
+                        unfocusedBorderColor = LightGreens,
                     )
                 )
 
@@ -169,7 +177,16 @@ fun OnBoardingScreen() {
                         .focusRequester(focusRequester),
                     value = lastName,
                     onValueChange = { lastName = it },
-                    label = { Text("Last Name") },
+                    label = {
+                        Text(
+                            "Last Name",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light,
+                                color = Color.Red
+                            )
+                        )
+                    },
                     placeholder = { Text("please enter a your last name") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -177,6 +194,11 @@ fun OnBoardingScreen() {
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    ),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = DarkGreens,
+                        unfocusedBorderColor = LightGreens,
                     )
                 )
 
@@ -189,35 +211,57 @@ fun OnBoardingScreen() {
                         email = it
                         isError = it.isValidating()
                     },
-                    label = { Text("Email Address") },
+                    label = {
+                        Text(
+                            "Email Address",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light,
+                                color = Color.Red
+                            )
+                        )
+                    },
                     placeholder = { Text("please enter a valid email address") },
                     isError = isError,
                     singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(fontSize = 12.sp),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done,
                         keyboardType = KeyboardType.Email
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = { focusManager.clearFocus() }
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = DarkGreens,
+                        unfocusedBorderColor = LightGreens,
                     )
                 )
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(32.dp),
+                        .padding(start = 40.dp, end = 40.dp, top = 32.dp, bottom = 32.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ButtonYellow,
-                        contentColor = DarkGreens
+                        contentColor = LightGreens
                     ),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                     onClick = {
-                        if (email.isNotEmpty()){
+                        if (email.isNotEmpty()) {
                             Toast.makeText(context, "$email $isError", Toast.LENGTH_LONG).show()
                             email = " "
                         } else {
                             Toast.makeText(context, "The email was empty", Toast.LENGTH_LONG).show()
                         }
 
-                    }) { Text(text = "Submit", textAlign = TextAlign.Center) }
+                    }) { Text(
+                    text = "Submit",
+                    textAlign = TextAlign.Center,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    ) }
             }
         }
     }
