@@ -1,6 +1,9 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
 import android.annotation.SuppressLint
+import android.text.TextUtils
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,6 +22,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -38,14 +43,17 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.math.sin
+import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
+import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,23 +66,23 @@ fun OnBoardingScreen() {
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Green,
-                    titleContentColor = Color.Green
+                    containerColor = DarkGreens,
+                    titleContentColor = DarkGreens
                 ),
                 title = {
                     Box(
                         modifier = Modifier
-                            .background(Color.Green),
+                            .background(DarkGreens),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            "OnBoarding.",
+                            "OnBoarding",
                             style = TextStyle(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
-                                color = Color.White
-                            )
+                            ),
+
                         )
                     }
                 },
@@ -91,8 +99,9 @@ fun OnBoardingScreen() {
         val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
         val scrollState = rememberScrollState()
+        val context = LocalContext.current
         LaunchedEffect(isFocused) {
-            if (isFocused){
+            if (isFocused) {
                 scrollState.animateScrollTo(scrollState.maxValue, tween(500))
             }
         }
@@ -101,13 +110,13 @@ fun OnBoardingScreen() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .size(200.dp)
                     .padding(top = 64.dp),
-                color = Color.Blue
+                color = DarkGreens
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -136,7 +145,7 @@ fun OnBoardingScreen() {
                 verticalArrangement = Arrangement.spacedBy(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     modifier = Modifier
                         .height(64.dp)
@@ -163,6 +172,12 @@ fun OnBoardingScreen() {
                     label = { Text("Last Name") },
                     placeholder = { Text("please enter a your last name") },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
                 )
 
                 OutlinedTextField(
@@ -172,19 +187,42 @@ fun OnBoardingScreen() {
                     value = email,
                     onValueChange = {
                         email = it
-                        isError = !isValid(it)
+                        isError = it.isValidating()
                     },
                     label = { Text("Email Address") },
                     placeholder = { Text("please enter a valid email address") },
                     isError = isError,
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Email
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    )
                 )
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ButtonYellow,
+                        contentColor = DarkGreens
+                    ),
+                    onClick = {
+                        if (email.isNotEmpty()){
+                            Toast.makeText(context, "$email $isError", Toast.LENGTH_LONG).show()
+                            email = " "
+                        } else {
+                            Toast.makeText(context, "The email was empty", Toast.LENGTH_LONG).show()
+                        }
+
+                    }) { Text(text = "Submit", textAlign = TextAlign.Center) }
             }
         }
     }
-
 }
 
-fun isValid(str: String): Boolean {
-    return str.length in 6..<10
+fun String.isValidating(): Boolean {
+    return !TextUtils.isEmpty(this) && Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
