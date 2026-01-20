@@ -15,6 +15,7 @@ kotlinx-serialization = "2.3.0"
 navigation_compose = "2.9.6"
 fonts = "1.10.1"
 data_store = "1.2.0"
+koin = "4.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,8 @@ androidx-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation_compose" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data_store" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "data_store" }
+koin-android = {module="io.insert-koin:koin-android",version.ref="koin"}
+koin-androidx-compose = {module = "io.insert-koin:koin-androidx-compose", version.ref="koin"}
 
 
 
