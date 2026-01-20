@@ -1,18 +1,19 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.2.0"
+kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.2"
-composeBom = "2024.09.00"
+composeBom = "2026.01.00"
 ktor = "3.3.3"
-serializaton_json = "1.8.1"
-ksp = "2.3.3"
-kotlinx-serialization = "1.8.0"
-fonts= "1.3.2"
+serializaton_json = "1.9.0"
+ksp = "2.3.4"
+kotlinx-serialization = "2.3.0"
+navigation_compose = "2.9.6"
+fonts= "1.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +37,7 @@ androidx-content-negotiation = { group = "io.ktor", name = "ktor-client-content-
 ktor-searializtion = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
 kotlinx-serailizaton-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializaton_json" }
 androidx-google-fonts = { group ="androidx.compose.ui", name="ui-text-google-fonts", version.ref="fonts"}
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation_compose" }
 
 
 [plugins]

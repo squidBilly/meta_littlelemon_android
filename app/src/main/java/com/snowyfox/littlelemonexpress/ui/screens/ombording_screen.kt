@@ -170,7 +170,6 @@ fun OnBoardingScreen() {
                         unfocusedBorderColor = LightGreens,
                     )
                 )
-
                 OutlinedTextField(
                     modifier = Modifier
                         .height(64.dp)
@@ -253,7 +252,6 @@ fun OnBoardingScreen() {
                         } else {
                             Toast.makeText(context, "The email was empty", Toast.LENGTH_LONG).show()
                         }
-
                     }) { Text(
                     text = "Submit",
                     textAlign = TextAlign.Center,
