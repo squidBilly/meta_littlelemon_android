@@ -13,7 +13,8 @@ serializaton_json = "1.9.0"
 ksp = "2.3.4"
 kotlinx-serialization = "2.3.0"
 navigation_compose = "2.9.6"
-fonts= "1.10.1"
+fonts = "1.10.1"
+data_store = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,8 +37,11 @@ androidx-ktor-client-android = { group = "io.ktor", name = "ktor-client-android"
 androidx-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation" }
 ktor-searializtion = { group = "io.ktor", name = "ktor-serialization-kotlinx-json" }
 kotlinx-serailizaton-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serializaton_json" }
-androidx-google-fonts = { group ="androidx.compose.ui", name="ui-text-google-fonts", version.ref="fonts"}
+androidx-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "fonts" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation_compose" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data_store" }
+androidx-datastore-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "data_store" }
+
 
 
 [plugins]

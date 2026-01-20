@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.kotlinx.serailizaton.json)
     implementation(libs.androidx.google.fonts)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.core)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
