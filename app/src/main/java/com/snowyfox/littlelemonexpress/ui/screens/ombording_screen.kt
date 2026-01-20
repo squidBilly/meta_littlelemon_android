@@ -1,6 +1,5 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
-import android.R.attr.onClick
 import android.text.TextUtils
 import android.util.Patterns
 import android.widget.Toast
@@ -27,7 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -53,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
@@ -68,7 +67,7 @@ fun OnBoardingScreen() {
             .fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = DarkGreens,
                     titleContentColor = ButtonYellow,
                 ),
@@ -267,4 +266,9 @@ fun OnBoardingScreen() {
 
 fun String.isValidating(): Boolean {
     return !TextUtils.isEmpty(this) && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+@Preview
+@Composable
+fun OnboardingPreview(){
+    OnBoardingScreen()
 }
