@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Surface
-import com.snowyfox.littlelemonexpress.ui.screens.OnBoardingScreen
+import androidx.navigation.compose.rememberNavController
+import com.snowyfox.littlelemonexpress.ui.navigation.LittleLemonNavigation
+import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.LittleLemonExpressTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,11 +14,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             LittleLemonExpressTheme {
-                Surface {
-                    OnBoardingScreen()
-                }
+                LittleLemonNavigation(
+                    startDestination = getStartDestination(false),
+                    navController = navController
+                )
             }
         }
     }
 }
+private fun getStartDestination(profilePresent: Boolean): Screens {
+    return when(profilePresent){
+        true -> Screens.HomeScreen
+        false -> Screens.OnBoardingScreen
+    }
+}
+

@@ -1,7 +1,5 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
-import android.text.TextUtils
-import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -58,6 +56,7 @@ import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
 import com.snowyfox.littlelemonexpress.ui.theme.RegularWhite
+import com.snowyfox.littlelemonexpress.utility.isValidEmail
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,6 +101,8 @@ fun OnBoardingScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .imePadding()
+                .verticalScroll(scrollState)
                 .padding(paddingValues)
         ) {
             Spacer(modifier = Modifier.height(32.dp))
@@ -132,8 +133,6 @@ fun OnBoardingScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .imePadding()
-                    .verticalScroll(scrollState)
                     .padding(32.dp),
                 verticalArrangement = Arrangement.spacedBy(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -207,7 +206,7 @@ fun OnBoardingScreen() {
                     value = email,
                     onValueChange = {
                         email = it
-                        isError = it.isValidating()
+                        isError = it.isValidEmail()
                     },
                     label = {
                         Text(
@@ -264,9 +263,7 @@ fun OnBoardingScreen() {
     }
 }
 
-fun String.isValidating(): Boolean {
-    return !TextUtils.isEmpty(this) && Patterns.EMAIL_ADDRESS.matcher(this).matches()
-}
+
 @Preview
 @Composable
 fun OnboardingPreview(){

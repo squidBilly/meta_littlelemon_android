@@ -23,4 +23,7 @@ class OnboardingViewModel(
             datastoreManager.saveToDatastore(userData)
         }
     }
+    fun removeProfile() = viewModelScope.launch {
+        datastoreManager.clearDatastore()
+    }
 }
