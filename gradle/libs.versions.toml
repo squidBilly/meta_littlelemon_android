@@ -44,8 +44,10 @@ androidx-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation_compose" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data_store" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "data_store" }
+# koin
 koin-android = {module="io.insert-koin:koin-android",version.ref="koin"}
 koin-androidx-compose = {module = "io.insert-koin:koin-androidx-compose", version.ref="koin"}
+koin-navigation-compose = {module = "io.insert-koin:koin-androidx-compose-navigation", version.ref="koin"}
 
 
 

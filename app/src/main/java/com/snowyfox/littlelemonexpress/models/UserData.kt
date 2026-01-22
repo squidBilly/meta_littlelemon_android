@@ -1,7 +1,8 @@
 package com.snowyfox.littlelemonexpress.models
 
 data class UserData(
-    val firstName: String = "",
+    var firstName: String = "",
     val lastName: String = "",
     val email: String = "",
+    val isLoggedIn: Boolean = false,
 )

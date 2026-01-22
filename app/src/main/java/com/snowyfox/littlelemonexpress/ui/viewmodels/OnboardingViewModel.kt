@@ -18,11 +18,17 @@ class OnboardingViewModel(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = UserData()
         )
-    fun saveUserData(userData: UserData){
+
+    fun saveUserData(userData: UserData) {
         viewModelScope.launch {
             datastoreManager.saveToDatastore(userData)
         }
     }
+
+    fun logInUser() = viewModelScope.launch {
+        datastoreManager.setLoggedInStatus(true)
+    }
+
     fun removeProfile() = viewModelScope.launch {
         datastoreManager.clearDatastore()
     }

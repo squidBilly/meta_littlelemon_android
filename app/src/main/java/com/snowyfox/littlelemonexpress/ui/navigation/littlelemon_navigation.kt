@@ -9,32 +9,34 @@ import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.screens.HomeScreen
 import com.snowyfox.littlelemonexpress.ui.screens.OnBoardingScreen
 import com.snowyfox.littlelemonexpress.ui.screens.ProfileScreen
+import com.snowyfox.littlelemonexpress.ui.viewmodels.OnboardingViewModel
 
 @Composable
 fun LittleLemonNavigation(
     startDestination: Screens,
     navController: NavHostController,
+    viewModel: OnboardingViewModel
 ) {
     NavHost(
         startDestination = startDestination,
         navController = navController
     ) {
-        onBoardingRoute()
-        homeScreen()
+        onBoardingRoute(navController, viewModel)
+        homeScreen(navController)
         profileScreen()
     }
 
 }
 
-fun NavGraphBuilder.onBoardingRoute() {
+fun NavGraphBuilder.onBoardingRoute(navController: NavHostController, viewModel: OnboardingViewModel) {
     composable<Screens.OnBoardingScreen> {
-        OnBoardingScreen()
+        OnBoardingScreen(navController, viewModel )
     }
 }
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(navController: NavHostController) {
     composable<Screens.HomeScreen> {
-        HomeScreen()
+        HomeScreen(navController)
     }
 }
 

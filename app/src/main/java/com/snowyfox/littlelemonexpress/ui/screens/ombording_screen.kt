@@ -49,18 +49,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
 import com.snowyfox.littlelemonexpress.ui.theme.RegularWhite
+import com.snowyfox.littlelemonexpress.ui.viewmodels.OnboardingViewModel
 import com.snowyfox.littlelemonexpress.utility.isValidEmail
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OnBoardingScreen() {
+fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingViewModel) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -105,7 +106,7 @@ fun OnBoardingScreen() {
                 .verticalScroll(scrollState)
                 .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -137,7 +138,6 @@ fun OnBoardingScreen() {
                 verticalArrangement = Arrangement.spacedBy(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     modifier = Modifier
                         .height(64.dp)
@@ -241,19 +241,22 @@ fun OnBoardingScreen() {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 40.dp, end = 40.dp, top = 32.dp, bottom = 32.dp),
+                        .padding(start = 40.dp, end = 40.dp, top = 24.dp, bottom = 32.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ButtonYellow,
                         contentColor = LightGreens
                     ),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                     onClick = {
-                        if (email.isNotEmpty()) {
-                            Toast.makeText(context, "$email $isError", Toast.LENGTH_LONG).show()
-                            email = " "
-                        } else {
-                            Toast.makeText(context, "The email was empty", Toast.LENGTH_LONG).show()
+                        when {
+                            email.isEmpty() -> {
+                                Toast.makeText(context, "email is empty", Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                Toast.makeText(context, "email is filled in", Toast.LENGTH_LONG).show()
+                            }
                         }
+
                     }) {
                     Text(
                         text = "Submit",
@@ -270,8 +273,3 @@ fun OnBoardingScreen() {
 }
 
 
-@Preview
-@Composable
-fun OnboardingPreview() {
-    OnBoardingScreen()
-}
