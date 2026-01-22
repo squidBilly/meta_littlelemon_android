@@ -11,7 +11,7 @@ val menuItems: List<MenuItem> = listOf(
         title = "Greek Salad",
         description = "The famous greek salad of crispy lettuce, peppers, olives, our chicago",
         price = "10",
-        image = R.drawable.greek_salad,
+        image = R.drawable.tiny_greek_salad,
         category = Category.STARTERS
     ),
     MenuItem(
@@ -27,7 +27,7 @@ val menuItems: List<MenuItem> = listOf(
         title = "Grilled Fish",
         description = "Whole grilled fish with Italian bread and vegetables",
         price = "10",
-        image = R.drawable.fillet_del_sol,
+        image = R.drawable.grilled_fish,
         category = Category.MAIN
     ),
     MenuItem(
@@ -46,4 +46,19 @@ val menuItems: List<MenuItem> = listOf(
         image = R.drawable.biscoti_tomato,
         category = Category.STARTERS
     ),
+    MenuItem(
+        id = 6,
+        title = "Lemon Dessert",
+        description = "Traditional Lemon tart, with a crispy buttery pastry crust filled with a smooth, tangy and sweet lemon flavored custard.",
+        price = "15.25",
+        image = R.drawable.lemon_dessert,
+        category = Category.DESSERTS
+    )
 );
+val categories = listOf(
+    "Desserts",
+    "Main",
+    "Lunch",
+    "Specials",
+    "A La Carte"
+)

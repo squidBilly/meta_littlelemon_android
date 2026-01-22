@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.snowyfox.littlelemonexpress.ui.navigation.LittleLemonNavigation
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
+import com.snowyfox.littlelemonexpress.ui.screens.HomeScreen
 import com.snowyfox.littlelemonexpress.ui.theme.LittleLemonExpressTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,10 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             LittleLemonExpressTheme {
-                LittleLemonNavigation(
-                    startDestination = getStartDestination(false),
-                    navController = navController
-                )
+                HomeScreen()
             }
         }
     }
@@ -27,7 +25,7 @@ class MainActivity : ComponentActivity() {
 private fun getStartDestination(profilePresent: Boolean): Screens {
     return when(profilePresent){
         true -> Screens.HomeScreen
-        false -> Screens.OnBoardingScreen
+        false -> Screens.ProfileScreen
     }
 }
 

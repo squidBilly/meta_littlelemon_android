@@ -144,16 +144,20 @@ fun OnBoardingScreen() {
                         .focusRequester(focusRequester),
                     value = firstName,
                     onValueChange = { firstName = it },
-                    label = { Text("First Name",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Light,
-                            color = Color.Red
+                    label = {
+                        Text(
+                            "First Name",
+                            style = TextStyle(
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Light,
+                                color = Color.Red
+                            )
                         )
-                    ) },
+                    },
                     placeholder = {
                         Text(
-                            "please enter a first name",)
+                            "please enter a first name",
+                        )
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -250,14 +254,16 @@ fun OnBoardingScreen() {
                         } else {
                             Toast.makeText(context, "The email was empty", Toast.LENGTH_LONG).show()
                         }
-                    }) { Text(
-                    text = "Submit",
-                    textAlign = TextAlign.Center,
+                    }) {
+                    Text(
+                        text = "Submit",
+                        textAlign = TextAlign.Center,
                         style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
-                    ) }
+                    )
+                }
             }
         }
     }
@@ -266,6 +272,6 @@ fun OnBoardingScreen() {
 
 @Preview
 @Composable
-fun OnboardingPreview(){
+fun OnboardingPreview() {
     OnBoardingScreen()
 }
