@@ -1,6 +1,5 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
-import android.app.ProgressDialog.show
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -33,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,18 +52,39 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.snowyfox.littlelemonexpress.models.UserData
+import com.snowyfox.littlelemonexpress.models.UserDataState
+import com.snowyfox.littlelemonexpress.ui.events.UserEvent
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
 import com.snowyfox.littlelemonexpress.ui.theme.RegularWhite
-import com.snowyfox.littlelemonexpress.ui.viewmodels.OnboardingViewModel
 import com.snowyfox.littlelemonexpress.utility.isValidEmail
+import com.snowyfox.littlelemonexpress.utility.message
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingViewModel) {
+fun OnBoardingScreen(
+    navController: NavHostController,
+    state: UserDataState,
+    onEvent:(UserEvent) -> Unit
+) {
+    val context = LocalContext.current
+
+    LaunchedEffect(state.isLoggedIn) {
+        if (state.isLoggedIn) {
+            navController.navigate(Screens.HomeScreen) {
+                navController.navigate(Screens.HomeScreen) {
+                    popUpTo(Screens.OnBoardingScreen) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+                }
+            }
+        }
+        "We hit the return fast".message(context)
+        return@LaunchedEffect
+    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -88,16 +107,13 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
         },
         containerColor = RegularWhite
     ) { paddingValues ->
-        var email by remember { mutableStateOf(" ") }
-        var firstName by remember { mutableStateOf(" ") }
-        var lastName by remember { mutableStateOf(" ") }
         var isError by remember { mutableStateOf(false) }
         val interactionSource = remember { MutableInteractionSource() }
         val isFocused by interactionSource.collectIsFocusedAsState()
         val focusRequester = remember { FocusRequester() }
         val focusManager = LocalFocusManager.current
         val scrollState = rememberScrollState()
-        val context = LocalContext.current
+
         LaunchedEffect(isFocused) {
             if (isFocused) {
                 scrollState.animateScrollTo(scrollState.maxValue, tween(500))
@@ -146,8 +162,14 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = firstName,
-                    onValueChange = { firstName = it },
+                    value = state.firstName,
+                    onValueChange = {
+                        if (it.length < 3) {
+                            "Please enter a name with more characters".message(context)
+                            return@OutlinedTextField
+                        }
+                        UserEvent.SetFirstName(it)
+                    },
                     label = {
                         Text(
                             "First Name",
@@ -156,11 +178,6 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                                 fontWeight = FontWeight.Light,
                                 color = Color.Black
                             )
-                        )
-                    },
-                    placeholder = {
-                        Text(
-                            "please enter a first name",
                         )
                     },
                     singleLine = true,
@@ -180,8 +197,14 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = lastName,
-                    onValueChange = { lastName = it },
+                    value = state.lastName,
+                    onValueChange = {
+                        if (it.length < 3) {
+                            "Please enter a last name with more characters".message(context)
+                            return@OutlinedTextField
+                        }
+                        UserEvent.SetLastName(it)
+                    },
                     label = {
                         Text(
                             "Last Name",
@@ -192,7 +215,6 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                             )
                         )
                     },
-                    placeholder = { Text("please enter a your last name") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
@@ -211,10 +233,16 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = email,
+                    value = state.email,
                     onValueChange = {
-                        email = it
                         isError = it.isValidEmail()
+                        if (it.length < 3 && isError) {
+                            "Please enter a valid email address with more characters".message(
+                                context
+                            )
+                            return@OutlinedTextField
+                        }
+                        UserEvent.SetEmailAddress(it)
                     },
                     label = {
                         Text(
@@ -252,14 +280,9 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                     ),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                     onClick = {
-                        if (!isError && email.length > 5) {
-                            val userData = UserData(
-                                firstName = firstName,
-                                lastName = lastName,
-                                email = email,
-                            )
-                            viewModel.saveUserData(userData)
-                            viewModel.logInUser(true)
+                        if (!isError) {
+                            onEvent(UserEvent.IsUserLoggedIn(true))
+                            onEvent(UserEvent.SaveUserData)
                             navController.navigate(Screens.HomeScreen) {
                                 popUpTo(Screens.OnBoardingScreen) {
                                     inclusive = true
@@ -268,7 +291,7 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                             }
                             Toast.makeText(
                                 context,
-                                "$isError",
+                                state.firstName,
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
@@ -277,14 +300,8 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                                 "Please enter a valid email address",
                                 Toast.LENGTH_LONG
                             ).show()
-                            viewModel.removeProfile()
                             return@Button
                         }
-
-                        email = " "
-                        lastName = " "
-                        firstName = " "
-
                     }
                 ) {
                     Text(
