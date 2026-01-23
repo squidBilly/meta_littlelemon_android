@@ -63,6 +63,9 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.compose.material.icon)
     implementation(libs.koin.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.corouties.android)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

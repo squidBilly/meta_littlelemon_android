@@ -1,6 +1,7 @@
 package com.snowyfox.littlelemonexpress
 
 import android.app.Application
+import com.snowyfox.littlelemonexpress.di.appModule
 import com.snowyfox.littlelemonexpress.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -12,7 +13,7 @@ class LittleLemonExpress: Application() {
         startKoin {
             androidLogger()
             androidContext(this@LittleLemonExpress)
-            modules(viewModelModule)
+            modules(appModule, viewModelModule)
         }
     }
 }

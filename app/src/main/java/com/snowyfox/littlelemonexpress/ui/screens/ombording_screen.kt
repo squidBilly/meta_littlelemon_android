@@ -67,9 +67,15 @@ import com.snowyfox.littlelemonexpress.utility.message
 fun OnBoardingScreen(
     navController: NavHostController,
     state: UserDataState,
-    onEvent:(UserEvent) -> Unit
+    onEvent: (UserEvent) -> Unit
 ) {
     val context = LocalContext.current
+    var isError by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(state.isLoggedIn) {
         if (state.isLoggedIn) {
@@ -82,8 +88,15 @@ fun OnBoardingScreen(
                 }
             }
         }
-        "We hit the return fast".message(context)
+        "$state".message(context)
         return@LaunchedEffect
+    }
+
+
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(500))
+        }
     }
     Scaffold(
         modifier = Modifier
@@ -107,18 +120,6 @@ fun OnBoardingScreen(
         },
         containerColor = RegularWhite
     ) { paddingValues ->
-        var isError by remember { mutableStateOf(false) }
-        val interactionSource = remember { MutableInteractionSource() }
-        val isFocused by interactionSource.collectIsFocusedAsState()
-        val focusRequester = remember { FocusRequester() }
-        val focusManager = LocalFocusManager.current
-        val scrollState = rememberScrollState()
-
-        LaunchedEffect(isFocused) {
-            if (isFocused) {
-                scrollState.animateScrollTo(scrollState.maxValue, tween(500))
-            }
-        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -164,10 +165,6 @@ fun OnBoardingScreen(
                         .focusRequester(focusRequester),
                     value = state.firstName,
                     onValueChange = {
-                        if (it.length < 3) {
-                            "Please enter a name with more characters".message(context)
-                            return@OutlinedTextField
-                        }
                         UserEvent.SetFirstName(it)
                     },
                     label = {
@@ -199,10 +196,6 @@ fun OnBoardingScreen(
                         .focusRequester(focusRequester),
                     value = state.lastName,
                     onValueChange = {
-                        if (it.length < 3) {
-                            "Please enter a last name with more characters".message(context)
-                            return@OutlinedTextField
-                        }
                         UserEvent.SetLastName(it)
                     },
                     label = {

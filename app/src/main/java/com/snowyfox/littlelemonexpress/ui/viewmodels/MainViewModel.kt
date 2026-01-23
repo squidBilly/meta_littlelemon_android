@@ -1,10 +1,11 @@
 package com.snowyfox.littlelemonexpress.ui.viewmodels
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.snowyfox.littlelemonexpress.data.DatastoreManager
 import com.snowyfox.littlelemonexpress.models.UserData
 import com.snowyfox.littlelemonexpress.models.UserDataState
+import com.snowyfox.littlelemonexpress.repository.AppPreferenceRepository
 import com.snowyfox.littlelemonexpress.ui.events.UserEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,11 +16,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val datastoreManager: DatastoreManager
+    private val repository: AppPreferenceRepository
 ) : ViewModel() {
     private val _userDataState = MutableStateFlow(value = UserDataState())
     val state: StateFlow<UserDataState> =
-        combine(_userDataState, datastoreManager.getDataFromDatastore()) { state, userData ->
+        combine(_userDataState, repository.getDataFromDatastore()) { state, userData ->
             state.copy(
                 firstName = userData.firstName,
                 lastName = userData.lastName,
@@ -28,9 +29,14 @@ class MainViewModel(
             )
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000L),
+            started = SharingStarted.WhileSubscribed(500L),
             initialValue = UserDataState()
         )
+    val bState: StateFlow<UserDataState>  = repository.getDataFromDatastore().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(500),
+        initialValue = UserDataState()
+    )
 
     fun onEvent(event: UserEvent) {
         when (event) {
@@ -51,7 +57,7 @@ class MainViewModel(
             }
 
             is UserEvent.RemoveProfile -> viewModelScope.launch {
-                datastoreManager.clearDatastore()
+                repository.clearDatastore()
             }
 
             is UserEvent.SaveUserData -> {
@@ -69,7 +75,15 @@ class MainViewModel(
                     isLoggedIn = loggedIn
                 )
                 viewModelScope.launch {
-                    datastoreManager.saveToDatastore(data)
+                    repository.saveToDataStore(data)
+                }
+                _userDataState.update {
+                    it.copy(
+                        firstName = "",
+                        lastName = "",
+                        email = "",
+                        isLoggedIn = false
+                    )
                 }
             }
         }

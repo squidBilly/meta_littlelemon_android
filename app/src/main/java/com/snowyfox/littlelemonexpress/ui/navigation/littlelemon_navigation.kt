@@ -26,7 +26,6 @@ fun LittleLemonNavigation(
         startDestination = startDestination,
         navController = navController
     ) {
-
         onBoardingRoute(navController, state, viewModel)
         homeScreen(navController)
         profileScreen(navController,state, viewModel)
