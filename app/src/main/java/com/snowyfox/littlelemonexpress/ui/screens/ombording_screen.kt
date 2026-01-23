@@ -1,5 +1,6 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
+import android.app.ProgressDialog.show
 import android.widget.Toast
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -32,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +54,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.snowyfox.littlelemonexpress.models.UserData
+import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
@@ -150,7 +154,7 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Light,
-                                color = Color.Red
+                                color = Color.Black
                             )
                         )
                     },
@@ -184,7 +188,7 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Light,
-                                color = Color.Red
+                                color = Color.Black
                             )
                         )
                     },
@@ -218,7 +222,7 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                             style = TextStyle(
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Light,
-                                color = Color.Red
+                                color = Color.Black
                             )
                         )
                     },
@@ -248,16 +252,41 @@ fun OnBoardingScreen(navController: NavHostController, viewModel: OnboardingView
                     ),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                     onClick = {
-                        when {
-                            email.isEmpty() -> {
-                                Toast.makeText(context, "email is empty", Toast.LENGTH_LONG).show()
+                        if (!isError && email.length > 5) {
+                            val userData = UserData(
+                                firstName = firstName,
+                                lastName = lastName,
+                                email = email,
+                            )
+                            viewModel.saveUserData(userData)
+                            viewModel.logInUser(true)
+                            navController.navigate(Screens.HomeScreen) {
+                                popUpTo(Screens.OnBoardingScreen) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
                             }
-                            else -> {
-                                Toast.makeText(context, "email is filled in", Toast.LENGTH_LONG).show()
-                            }
+                            Toast.makeText(
+                                context,
+                                "$isError",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Please enter a valid email address",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            viewModel.removeProfile()
+                            return@Button
                         }
 
-                    }) {
+                        email = " "
+                        lastName = " "
+                        firstName = " "
+
+                    }
+                ) {
                     Text(
                         text = "Submit",
                         textAlign = TextAlign.Center,

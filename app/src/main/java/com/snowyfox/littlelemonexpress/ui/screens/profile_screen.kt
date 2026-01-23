@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -53,16 +52,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.snowyfox.littlelemonexpress.R
+import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
+import com.snowyfox.littlelemonexpress.ui.viewmodels.OnboardingViewModel
 import com.snowyfox.littlelemonexpress.utility.isValidEmail
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
-    val context = LocalContext.current
+fun ProfileScreen(navController: NavHostController, viewModel: OnboardingViewModel) {
+
+    var email by remember { mutableStateOf(" ") }
+    var firstName by remember { mutableStateOf(" ") }
+    var lastName by remember { mutableStateOf(" ") }
+    var isError by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            scrollState.animateScrollTo(scrollState.maxValue, tween(500))
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -88,20 +106,7 @@ fun ProfileScreen() {
                 )
             }
         ) { innerPadding ->
-            var email by remember { mutableStateOf(" ") }
-            var firstName by remember { mutableStateOf(" ") }
-            var lastName by remember { mutableStateOf(" ") }
-            var isError by remember { mutableStateOf(false) }
-            val interactionSource = remember { MutableInteractionSource() }
-            val isFocused by interactionSource.collectIsFocusedAsState()
-            val focusRequester = remember { FocusRequester() }
-            val focusManager = LocalFocusManager.current
-            val scrollState = rememberScrollState()
-            LaunchedEffect(isFocused) {
-                if (isFocused) {
-                    scrollState.animateScrollTo(scrollState.maxValue, tween(500))
-                }
-            }
+
             Column(
                 modifier =
                     Modifier
@@ -254,7 +259,16 @@ fun ProfileScreen() {
                             contentColor = LightGreens
                         ),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
-                        onClick = {}) {
+                        onClick = {
+                            viewModel.removeProfile()
+                            navController.navigate(Screens.OnBoardingScreen) {
+                                popUpTo(Screens.ProfileScreen) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
                         Text(
                             text = "Log out",
                             textAlign = TextAlign.Center,

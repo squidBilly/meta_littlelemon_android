@@ -1,13 +1,19 @@
 package com.snowyfox.littlelemonexpress.ui.components
 
+import android.R.attr.label
+import android.R.attr.onClick
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Person2
 import androidx.compose.material3.DrawerDefaults
@@ -44,6 +50,7 @@ fun ProfileDrawer(
     drawerState: DrawerState,
     scope: CoroutineScope
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     var selectedItem by remember { mutableStateOf<NavItem?>(null) }
     ModalDrawerSheet(
         modifier = Modifier.requiredWidth(300.dp),
@@ -52,7 +59,7 @@ fun ProfileDrawer(
         ProfileDrawerHeader()
         navItems.forEach { item ->
             NavigationDrawerItem(
-                modifier = Modifier.background(color = Color.White)
+                modifier = Modifier.background(color = Color.White).weight(1f)
                     .padding(NavigationDrawerItemDefaults.ItemPadding)
                 ,
                 icon = {
@@ -68,12 +75,16 @@ fun ProfileDrawer(
                         )
                     )
                 },
+                colors = NavigationDrawerItemDefaults.colors(
+                    selectedContainerColor = Color.White,
+                ),
                 selected = item == selectedItem,
                 onClick = {
                     navController.navigate(Screens.ProfileScreen)
                     scope.launch { drawerState.close() }
                     selectedItem = item
                 },
+                interactionSource = interactionSource,
             )
         }
     }
@@ -84,14 +95,14 @@ fun ProfileDrawerHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 200.dp)
+            .height(150.dp)
             .background(color = DarkGreens),
-        contentAlignment = Alignment.TopCenter
+        contentAlignment = Alignment.Center
     ) {
         Text(
             "Profile",
             style = TextStyle(
-                fontSize = 24.sp,
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
                 color = ButtonYellow

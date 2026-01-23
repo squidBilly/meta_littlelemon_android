@@ -23,7 +23,7 @@ fun LittleLemonNavigation(
     ) {
         onBoardingRoute(navController, viewModel)
         homeScreen(navController)
-        profileScreen()
+        profileScreen(navController, viewModel)
     }
 
 }
@@ -40,8 +40,8 @@ fun NavGraphBuilder.homeScreen(navController: NavHostController) {
     }
 }
 
-fun NavGraphBuilder.profileScreen() {
+fun NavGraphBuilder.profileScreen(naveController: NavHostController,viewModel: OnboardingViewModel) {
     composable<Screens.ProfileScreen> {
-        ProfileScreen()
+        ProfileScreen(naveController, viewModel)
     }
 }

@@ -19,17 +19,25 @@ class OnboardingViewModel(
             initialValue = UserData()
         )
 
-    fun saveUserData(userData: UserData) {
+    fun saveUserData(newUserData: UserData) {
         viewModelScope.launch {
-            datastoreManager.saveToDatastore(userData)
+            datastoreManager.saveToDatastore(newUserData)
+            userData.value.copy(
+                firstName = newUserData.firstName,
+                lastName = newUserData.lastName,
+                email = newUserData.email,
+                isLoggedIn = newUserData.isLoggedIn
+            )
         }
     }
 
-    fun logInUser() = viewModelScope.launch {
-        datastoreManager.setLoggedInStatus(true)
+    fun logInUser(loggedIn: Boolean) = viewModelScope.launch {
+        datastoreManager.setLoggedInStatus(loggedIn)
+        userData.value.copy(isLoggedIn = loggedIn)
     }
 
     fun removeProfile() = viewModelScope.launch {
         datastoreManager.clearDatastore()
+        userData.value.copy(firstName = " ", lastName = " ", email = " ", isLoggedIn = false)
     }
 }
