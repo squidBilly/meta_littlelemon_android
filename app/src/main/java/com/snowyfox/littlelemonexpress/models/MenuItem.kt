@@ -13,5 +13,8 @@ data class MenuItem(
 enum class Category {
     MAIN,
     STARTERS,
-    DESSERTS
+    DESSERTS,
+    LUNCH,
+    SPECIALS,
+
 }

@@ -1,4 +1,5 @@
-package com.snowyfox.littlelemonexpress.data
+package com.snowyfox.littlelemonexpress.data.provided_data
+
 
 import com.snowyfox.littlelemonexpress.R
 import com.snowyfox.littlelemonexpress.models.Category
@@ -54,9 +55,10 @@ val menuItems: List<MenuItem> = listOf(
         image = R.drawable.lemon_dessert,
         category = Category.DESSERTS
     )
-);
+)
 val categories = listOf(
     "Desserts",
+    "Starters",
     "Main",
     "Lunch",
     "Specials",

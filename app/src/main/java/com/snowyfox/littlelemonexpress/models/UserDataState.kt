@@ -7,9 +7,3 @@ data class UserDataState(
     val isLoggedIn: Boolean = false,
 )
 
-data class UserData(
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val isLoggedIn: Boolean,
-)

@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,23 +55,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.snowyfox.littlelemonexpress.R
-import com.snowyfox.littlelemonexpress.models.UserDataState
-import com.snowyfox.littlelemonexpress.ui.events.UserEvent
+import com.snowyfox.littlelemonexpress.ui.events.ProfileUserEvents
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
+import com.snowyfox.littlelemonexpress.ui.viewmodels.ProfileViewModel
 import com.snowyfox.littlelemonexpress.utility.isValidEmail
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavHostController,
-    state: UserDataState,
-    onEvent: (UserEvent) -> Unit
+    navController: NavController,
+    viewModel: ProfileViewModel,
 ) {
+    val uiState by viewModel.state.collectAsState()
+    val events = viewModel::onProfileEvent
     var isError by remember { mutableStateOf(false) }
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -153,8 +156,8 @@ fun ProfileScreen(
                         modifier = Modifier
                             .height(64.dp)
                             .focusRequester(focusRequester),
-                        value = if (state.firstName.isEmpty()) state.firstName else " ",
-                        onValueChange = { UserEvent.SetFirstName(it) },
+                        value = uiState.firstName,
+                        onValueChange = { events(ProfileUserEvents.SetFirstName(it)) },
                         label = {
                             Text(
                                 "First Name",
@@ -187,8 +190,8 @@ fun ProfileScreen(
                         modifier = Modifier
                             .height(64.dp)
                             .focusRequester(focusRequester),
-                        value = if (state.lastName.isEmpty()) state.lastName else " ",
-                        onValueChange = { UserEvent.SetLastName(it) },
+                        value = uiState.lastName,
+                        onValueChange = { events(ProfileUserEvents.SetLastName(it)) },
                         label = {
                             Text(
                                 "Last Name",
@@ -217,7 +220,7 @@ fun ProfileScreen(
                         modifier = Modifier
                             .height(64.dp)
                             .focusRequester(focusRequester),
-                        value = if (state.email.isEmpty()) state.email else " ",
+                        value = uiState.email,
                         onValueChange = {
                             isError = it.isValidEmail()
                             if (isError) {
@@ -227,7 +230,7 @@ fun ProfileScreen(
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
-                            UserEvent.SetEmailAddress(it)
+                            events(ProfileUserEvents.SetEmailAddress(it))
                         },
                         label = {
                             Text(
@@ -271,7 +274,8 @@ fun ProfileScreen(
                         ),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                         onClick = {
-                            onEvent(UserEvent.RemoveProfile)
+                            events(ProfileUserEvents.IsUserLoggedIn(false))
+                            events(ProfileUserEvents.RemoveProfile)
                             navController.navigate(Screens.OnBoardingScreen) {
                                 popUpTo(Screens.ProfileScreen) {
                                     inclusive = true

@@ -1,7 +1,7 @@
 package com.snowyfox.littlelemonexpress.ui.screens
 
-import android.widget.Toast
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,58 +45,68 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.R
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import com.snowyfox.littlelemonexpress.models.UserDataState
+import androidx.navigation.compose.rememberNavController
 import com.snowyfox.littlelemonexpress.ui.events.UserEvent
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
 import com.snowyfox.littlelemonexpress.ui.theme.LightGreens
 import com.snowyfox.littlelemonexpress.ui.theme.RegularWhite
+import com.snowyfox.littlelemonexpress.ui.viewmodels.MainViewModel
 import com.snowyfox.littlelemonexpress.utility.isValidEmail
 import com.snowyfox.littlelemonexpress.utility.message
+import org.koin.androidx.compose.koinViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingScreen(
-    navController: NavHostController,
-    state: UserDataState,
-    onEvent: (UserEvent) -> Unit
+    navController: NavController,
+    viewModel: MainViewModel = koinViewModel(),
 ) {
+    val dataStoreState by viewModel.state.collectAsState()
+    val uiState by viewModel.uiStateFlow.collectAsState()
+    val events = viewModel::onEvent
     val context = LocalContext.current
-    var isError by remember { mutableStateOf(false) }
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    val scrollState = rememberScrollState()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    val scrollState = rememberScrollState()
+    var isError by remember { mutableStateOf(false) }
 
-    LaunchedEffect(state.isLoggedIn) {
-        if (state.isLoggedIn) {
+    LaunchedEffect(Unit) {
+        if (dataStoreState.isLoggedIn) {
             navController.navigate(Screens.HomeScreen) {
-                navController.navigate(Screens.HomeScreen) {
-                    popUpTo(Screens.OnBoardingScreen) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
+                popUpTo(Screens.OnBoardingScreen) {
+                    inclusive = true
                 }
+                launchSingleTop = true
             }
         }
-        "$state".message(context)
         return@LaunchedEffect
     }
 
-
     LaunchedEffect(isFocused) {
         if (isFocused) {
-            scrollState.animateScrollTo(scrollState.maxValue, tween(500))
+            scrollState.animateScrollTo(
+                scrollState.maxValue,
+                tween(500)
+            )
         }
     }
     Scaffold(
@@ -103,18 +114,21 @@ fun OnBoardingScreen(
             .fillMaxSize(),
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkGreens,
-                    titleContentColor = ButtonYellow,
-                ),
                 title = {
-                    Text(
-                        "Onboarding",
-                        style = TextStyle(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(100.dp)
+                            .padding(top = 10.dp, bottom = 20.dp),
+
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(com.snowyfox.littlelemonexpress.R.drawable.littlelemon_small),
+                            contentDescription = "Logo",
+                        )
+                    }
+
                 },
             )
         },
@@ -127,12 +141,10 @@ fun OnBoardingScreen(
                 .verticalScroll(scrollState)
                 .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .size(200.dp)
-                    .padding(top = 64.dp),
+                    .size(200.dp),
                 color = DarkGreens
             ) {
                 Box(
@@ -159,13 +171,14 @@ fun OnBoardingScreen(
                 verticalArrangement = Arrangement.spacedBy(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 OutlinedTextField(
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = state.firstName,
+                    value = uiState.firstName,
                     onValueChange = {
-                        UserEvent.SetFirstName(it)
+                        events(UserEvent.SetFirstName(it))
                     },
                     label = {
                         Text(
@@ -194,9 +207,9 @@ fun OnBoardingScreen(
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = state.lastName,
+                    value = uiState.lastName,
                     onValueChange = {
-                        UserEvent.SetLastName(it)
+                        events(UserEvent.SetLastName(it))
                     },
                     label = {
                         Text(
@@ -221,21 +234,13 @@ fun OnBoardingScreen(
                         unfocusedBorderColor = LightGreens,
                     )
                 )
-
                 OutlinedTextField(
                     modifier = Modifier
                         .height(64.dp)
                         .focusRequester(focusRequester),
-                    value = state.email,
+                    value = uiState.email,
                     onValueChange = {
-                        isError = it.isValidEmail()
-                        if (it.length < 3 && isError) {
-                            "Please enter a valid email address with more characters".message(
-                                context
-                            )
-                            return@OutlinedTextField
-                        }
-                        UserEvent.SetEmailAddress(it)
+                        events(UserEvent.SetEmailAddress(it))
                     },
                     label = {
                         Text(
@@ -263,6 +268,7 @@ fun OnBoardingScreen(
                         unfocusedBorderColor = LightGreens,
                     )
                 )
+
                 Button(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -273,27 +279,32 @@ fun OnBoardingScreen(
                     ),
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                     onClick = {
-                        if (!isError) {
-                            onEvent(UserEvent.IsUserLoggedIn(true))
-                            onEvent(UserEvent.SaveUserData)
-                            navController.navigate(Screens.HomeScreen) {
-                                popUpTo(Screens.OnBoardingScreen) {
-                                    inclusive = true
-                                }
-                                launchSingleTop = true
+                        when {
+                            uiState.firstName.isEmpty() -> {
+                                "Please enter a first name".message(context)
+                                return@Button
                             }
-                            Toast.makeText(
-                                context,
-                                state.firstName,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            Toast.makeText(
-                                context,
-                                "Please enter a valid email address",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            return@Button
+
+                            uiState.lastName.isEmpty() -> {
+                                "Please enter a last name".message(context)
+                                return@Button
+                            }
+
+                            uiState.email.isEmpty() || !uiState.email.isValidEmail() -> {
+                                "Please enter a valid email".message(context)
+                                return@Button
+                            }
+
+                            else -> {
+                                events(UserEvent.SaveUserData)
+                                events(UserEvent.IsUserLoggedIn(true))
+                                navController.navigate(Screens.HomeScreen) {
+                                    popUpTo(Screens.OnBoardingScreen) {
+                                        inclusive = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     }
                 ) {
@@ -309,6 +320,14 @@ fun OnBoardingScreen(
             }
         }
     }
+}
+
+@Composable
+@Preview
+fun OmBoardingPreviewScreen() {
+    val navController = rememberNavController()
+
+    OnBoardingScreen(navController)
 }
 
 

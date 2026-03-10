@@ -37,6 +37,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
@@ -46,7 +47,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileDrawer(
-    navController: NavHostController,
+    navController: NavController,
     drawerState: DrawerState,
     scope: CoroutineScope
 ) {

@@ -1,24 +1,26 @@
 [versions]
-agp = "9.0.0"
-kotlin = "2.3.0"
+agp = "9.0.1"
+kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.2"
-composeBom = "2026.01.00"
-ktor = "3.3.3"
+activityCompose = "1.12.4"
+composeBom = "2026.02.01"
+ktor = "3.4.1"
 serializaton_json = "1.10.0"
-ksp = "2.3.4"
-kotlinx-serialization = "2.3.0"
-navigation_compose = "2.9.6"
-fonts = "1.10.1"
+ksp = "2.3.5"
+kotlinx-serialization = "2.3.10"
+navigation_compose = "2.9.7"
+fonts = "1.10.4"
 data_store = "1.2.0"
 koin = "4.1.1"
 material3Icon = "1.7.8"
 viewmodelKtx = "2.10.0"
 kotinxCoroutines = "1.10.2"
+navigationRuntimeKtx = "2.9.7"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +55,8 @@ koin-navigation-compose = { module = "io.insert-koin:koin-androidx-compose-navig
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "viewmodelKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "viewmodelKtx" }
 kotlinx-corouties-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotinxCoroutines" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+
 
 
 

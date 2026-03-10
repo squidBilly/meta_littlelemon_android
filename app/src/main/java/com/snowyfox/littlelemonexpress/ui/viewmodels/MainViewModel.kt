@@ -1,38 +1,25 @@
 package com.snowyfox.littlelemonexpress.ui.viewmodels
 
-import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.snowyfox.littlelemonexpress.models.UserData
 import com.snowyfox.littlelemonexpress.models.UserDataState
-import com.snowyfox.littlelemonexpress.repository.AppPreferenceRepository
+import com.snowyfox.littlelemonexpress.repository.IOnBoardingRepository
 import com.snowyfox.littlelemonexpress.ui.events.UserEvent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val repository: AppPreferenceRepository
+    private val repository: IOnBoardingRepository
 ) : ViewModel() {
-    private val _userDataState = MutableStateFlow(value = UserDataState())
-    val state: StateFlow<UserDataState> =
-        combine(_userDataState, repository.getDataFromDatastore()) { state, userData ->
-            state.copy(
-                firstName = userData.firstName,
-                lastName = userData.lastName,
-                email = userData.email,
-                isLoggedIn = userData.isLoggedIn
-            )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(500L),
-            initialValue = UserDataState()
-        )
-    val bState: StateFlow<UserDataState>  = repository.getDataFromDatastore().stateIn(
+    private val _mutableUiState = MutableStateFlow(UserDataState())
+    val uiStateFlow: StateFlow<UserDataState> = _mutableUiState
+
+    val state: StateFlow<UserDataState> = repository.getDataFromDatastore.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(500),
         initialValue = UserDataState()
@@ -41,43 +28,32 @@ class MainViewModel(
     fun onEvent(event: UserEvent) {
         when (event) {
             is UserEvent.SetFirstName -> viewModelScope.launch {
-                _userDataState.update { it.copy(firstName = event.firstname) }
+                _mutableUiState.update { userDataState -> userDataState.copy(firstName = event.firstname) }
             }
 
             is UserEvent.SetLastName -> viewModelScope.launch {
-                _userDataState.update { it.copy(lastName = event.lastName) }
+                _mutableUiState.update { userDataState -> userDataState.copy(lastName = event.lastName) }
             }
 
             is UserEvent.SetEmailAddress -> viewModelScope.launch {
-                _userDataState.update { it.copy(email = event.emailAddress) }
+                _mutableUiState.update { userDataState -> userDataState.copy(email = event.emailAddress) }
             }
 
             is UserEvent.IsUserLoggedIn -> viewModelScope.launch {
-                _userDataState.update { it.copy(isLoggedIn = event.loggedIn) }
-            }
-
-            is UserEvent.RemoveProfile -> viewModelScope.launch {
-                repository.clearDatastore()
+                _mutableUiState.update { userDataState -> userDataState.copy(isLoggedIn = event.loggedIn) }
             }
 
             is UserEvent.SaveUserData -> {
-                val firstName = state.value.firstName
-                val lastName = state.value.lastName
-                val email = state.value.email
-                val loggedIn = state.value.isLoggedIn
-                if (firstName.isBlank() || lastName.isBlank() || email.isNotBlank()) {
-                    return
-                }
-                val data = UserData(
-                    firstName = firstName,
-                    lastName = lastName,
-                    email = email,
-                    isLoggedIn = loggedIn
+                val preferenceData = UserDataState(
+                    firstName = uiStateFlow.value.firstName,
+                    lastName = uiStateFlow.value.lastName,
+                    email = uiStateFlow.value.email,
+                    isLoggedIn = uiStateFlow.value.isLoggedIn
                 )
                 viewModelScope.launch {
-                    repository.saveToDataStore(data)
+                    repository.saveToDataStore(preferenceData)
                 }
-                _userDataState.update {
+                _mutableUiState.update {
                     it.copy(
                         firstName = "",
                         lastName = "",
@@ -89,3 +65,6 @@ class MainViewModel(
         }
     }
 }
+
+fun StateFlow<UserDataState>.toMutableFlow() =
+    this.map { userDataState -> MutableStateFlow(userDataState) }
