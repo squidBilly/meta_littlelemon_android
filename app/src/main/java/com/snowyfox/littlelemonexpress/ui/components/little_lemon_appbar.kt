@@ -1,6 +1,8 @@
 package com.snowyfox.littlelemonexpress.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -24,6 +26,8 @@ fun LittleLemonAppBar(
     onNavigationIconClicked: () -> Unit
 ) {
     CenterAlignedTopAppBar(
+        modifier = Modifier.fillMaxWidth()
+            .height(100.dp),
         title = {
             Image(
                 painter = painterResource(com.snowyfox.littlelemonexpress.R.drawable.littlelemon_small),

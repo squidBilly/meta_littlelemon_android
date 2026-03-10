@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,9 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.snowyfox.littlelemonexpress.R
 import com.snowyfox.littlelemonexpress.data.provided_data.categories
 import com.snowyfox.littlelemonexpress.data.provided_data.menuItems
@@ -42,6 +45,7 @@ import com.snowyfox.littlelemonexpress.models.MenuItem
 import com.snowyfox.littlelemonexpress.ui.components.DishButton
 import com.snowyfox.littlelemonexpress.ui.components.DishMenuCard
 import com.snowyfox.littlelemonexpress.ui.components.LittleLemonAppBar
+import com.snowyfox.littlelemonexpress.ui.components.LittleLemonSearchBar
 import com.snowyfox.littlelemonexpress.ui.components.ProfileDrawer
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
@@ -77,12 +81,14 @@ fun HomeScreen(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(innerPadding)
-                        .padding(top = 20.dp, start = 4.dp, end = 4.dp),
+                        .padding(start = 4.dp, end = 4.dp),
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = DarkGreens),
+                            .background(color = DarkGreens)
+                            .padding(bottom = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Box(
                             modifier = Modifier
@@ -115,11 +121,13 @@ fun HomeScreen(navController: NavController) {
                                     .align(Alignment.BottomStart)
                             )
                         }
-                        Row() {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                                .height(120.dp)
+                        ) {
                             Box(
                                 modifier = Modifier
                                     .width(250.dp)
-                                    .height(150.dp)
 
                             ) {
                                 Text(
@@ -136,10 +144,11 @@ fun HomeScreen(navController: NavController) {
                             Image(
                                 painter = painterResource(R.drawable.hero_image),
                                 contentDescription = "Grilled Fish",
-                                modifier = Modifier.size(130.dp)
+                                modifier = Modifier.size(110.dp)
                             )
                         }
-
+                        LittleLemonSearchBar()
+                        Spacer(Modifier.height(10.dp))
                     }
                     Text(
                         text = "ORDER FOR DELIVERY!",
@@ -194,3 +203,9 @@ fun HomeScreen(navController: NavController) {
     )
 }
 
+@Composable
+@Preview
+fun HomeScreenPreview() {
+    val navController = rememberNavController()
+    HomeScreen(navController)
+}
