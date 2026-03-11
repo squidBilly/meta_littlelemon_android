@@ -1,25 +1,15 @@
 package com.snowyfox.littlelemonexpress.ui.components
 
-import android.R.attr.label
-import android.R.attr.onClick
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Person2
 import androidx.compose.material3.DrawerDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
@@ -38,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.ButtonYellow
 import com.snowyfox.littlelemonexpress.ui.theme.DarkGreens
@@ -81,7 +70,12 @@ fun ProfileDrawer(
                 ),
                 selected = item == selectedItem,
                 onClick = {
-                    navController.navigate(Screens.ProfileScreen)
+                    navController.navigate(Screens.ProfileScreen){
+                        popUpTo(Screens.OnBoardingScreen) {
+                            inclusive = true
+                        }
+                    }
+
                     scope.launch { drawerState.close() }
                     selectedItem = item
                 },

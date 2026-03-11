@@ -22,12 +22,15 @@ class MainActivity : ComponentActivity() {
                 val mainViewModel: MainViewModel = koinViewModel()
                 val logInState by mainViewModel.state.collectAsState()
                 val navController = rememberNavController()
-                if (logInState.isLoggedIn) {
-                    LittleLemonNavigation(Screens.HomeScreen, navController, mainViewModel)
-                } else {
-                    LittleLemonNavigation(Screens.OnBoardingScreen, navController, mainViewModel)
-
-                }
+                LittleLemonNavigation(
+                    startDestination = if (!logInState.isLoggedIn) {
+                        Screens.OnBoardingScreen
+                    } else {
+                        Screens.HomeScreen
+                    },
+                    navController,
+                    mainViewModel
+                )
             }
         }
     }

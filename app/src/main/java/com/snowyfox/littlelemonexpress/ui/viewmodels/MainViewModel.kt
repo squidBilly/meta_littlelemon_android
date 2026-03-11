@@ -21,7 +21,7 @@ class MainViewModel(
 
     val state: StateFlow<UserDataState> = repository.getDataFromDatastore.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(500),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = UserDataState()
     )
 

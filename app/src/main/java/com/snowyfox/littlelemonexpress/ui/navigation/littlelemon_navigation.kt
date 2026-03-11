@@ -1,7 +1,6 @@
 package com.snowyfox.littlelemonexpress.ui.navigation
 
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -29,8 +28,8 @@ fun LittleLemonNavigation(
         startDestination = startDestination,
         navController = navController
     ) {
-        onBoardingRoute(navController, mainViewModel)
         homeScreen(navController)
+        onBoardingRoute(navController, mainViewModel)
         profileScreen(navController, profileViewModel)
     }
 }
@@ -40,9 +39,6 @@ fun NavGraphBuilder.onBoardingRoute(
     viewModel: MainViewModel,
 ) {
     composable<Screens.OnBoardingScreen>(
-        exitTransition = {
-            fadeOut(animationSpec = tween(durationMillis = 300, delayMillis = 150))
-        }
     ) {
         OnBoardingScreen(navController, viewModel)
     }
@@ -50,9 +46,6 @@ fun NavGraphBuilder.onBoardingRoute(
 
 fun NavGraphBuilder.homeScreen(navController: NavController) {
     composable<Screens.HomeScreen>(
-        enterTransition = {
-            fadeIn(animationSpec = tween(durationMillis = 300, delayMillis = 150))
-        }
     ) {
         HomeScreen(navController)
     }

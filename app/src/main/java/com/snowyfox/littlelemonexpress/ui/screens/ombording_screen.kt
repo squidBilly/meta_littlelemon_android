@@ -283,10 +283,9 @@ fun OnBoardingScreen(
                                 events(UserEvent.IsUserLoggedIn(true))
                                 events(UserEvent.SaveUserData)
                                 navController.navigate(Screens.HomeScreen) {
-                                    popUpTo(Screens.OnBoardingScreen) {
+                                    popUpTo(Screens.OnBoardingScreen){
                                         inclusive = true
                                     }
-                                    launchSingleTop = true
                                 }
                             }
                         }
