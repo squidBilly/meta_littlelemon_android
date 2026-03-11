@@ -22,8 +22,8 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LittleLemonNavigation(
     startDestination: Screens,
     navController: NavHostController,
+    mainViewModel: MainViewModel
 ) {
-    val mainViewModel: MainViewModel = koinViewModel()
     val profileViewModel: ProfileViewModel = koinViewModel()
     NavHost(
         startDestination = startDestination,

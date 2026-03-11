@@ -10,8 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.snowyfox.littlelemonexpress.ui.navigation.LittleLemonNavigation
 import com.snowyfox.littlelemonexpress.ui.navigation.screens.Screens
 import com.snowyfox.littlelemonexpress.ui.theme.LittleLemonExpressTheme
-import com.snowyfox.littlelemonexpress.ui.viewmodels.LoginViewModel
-import com.snowyfox.littlelemonexpress.utility.message
+import com.snowyfox.littlelemonexpress.ui.viewmodels.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
@@ -20,15 +19,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LittleLemonExpressTheme {
-                val loginViewModel: LoginViewModel = koinViewModel()
-                val logInState by loginViewModel.logInState.collectAsState()
+                val mainViewModel: MainViewModel = koinViewModel()
+                val logInState by mainViewModel.state.collectAsState()
                 val navController = rememberNavController()
-                if (logInState) {
-                    LittleLemonNavigation(Screens.HomeScreen, navController)
-                    "This is HomeScreen".message(this)
+                if (logInState.isLoggedIn) {
+                    LittleLemonNavigation(Screens.HomeScreen, navController, mainViewModel)
                 } else {
-                    LittleLemonNavigation(Screens.OnBoardingScreen, navController)
-                    "This is the onboardScreen".message(this)
+                    LittleLemonNavigation(Screens.OnBoardingScreen, navController, mainViewModel)
+
                 }
             }
         }

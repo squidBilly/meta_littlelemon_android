@@ -280,8 +280,8 @@ fun OnBoardingScreen(
                             }
 
                             else -> {
-                                events(UserEvent.SaveUserData)
                                 events(UserEvent.IsUserLoggedIn(true))
+                                events(UserEvent.SaveUserData)
                                 navController.navigate(Screens.HomeScreen) {
                                     popUpTo(Screens.OnBoardingScreen) {
                                         inclusive = true
