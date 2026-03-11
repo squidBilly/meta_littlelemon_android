@@ -72,7 +72,7 @@ fun OnBoardingScreen(
     navController: NavController,
     viewModel: MainViewModel = koinViewModel(),
 ) {
-    val dataStoreState by viewModel.state.collectAsState()
+
     val uiState by viewModel.uiStateFlow.collectAsState()
     val events = viewModel::onEvent
     val context = LocalContext.current
@@ -84,17 +84,6 @@ fun OnBoardingScreen(
     val focusManager = LocalFocusManager.current
     var isError by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        if (dataStoreState.isLoggedIn) {
-            navController.navigate(Screens.HomeScreen) {
-                popUpTo(Screens.OnBoardingScreen) {
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
-        }
-        return@LaunchedEffect
-    }
 
     LaunchedEffect(isFocused) {
         if (isFocused) {
