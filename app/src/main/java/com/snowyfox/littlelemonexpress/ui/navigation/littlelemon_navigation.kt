@@ -3,6 +3,7 @@ package com.snowyfox.littlelemonexpress.ui.navigation
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -23,42 +24,52 @@ fun LittleLemonNavigation(
     navController: NavHostController,
     mainViewModel: MainViewModel
 ) {
-    val profileViewModel: ProfileViewModel = koinViewModel()
     NavHost(
         startDestination = startDestination,
         navController = navController
     ) {
-        homeScreen(navController)
-        onBoardingRoute(navController, mainViewModel)
-        profileScreen(navController, profileViewModel)
+        homeScreen(
+            navController = navController,
+        )
+        onBoardingRoute(
+            navController = navController,
+            viewModel = mainViewModel,
+            navigateToHome = {
+                navController.popBackStack()
+                navController.navigate(Screens.HomeScreen)
+            }
+        )
+        profileScreen(navController)
     }
 }
 
 fun NavGraphBuilder.onBoardingRoute(
     navController: NavController,
     viewModel: MainViewModel,
+    navigateToHome: () -> Unit
 ) {
-    composable<Screens.OnBoardingScreen>(
-    ) {
-        OnBoardingScreen(navController, viewModel)
+    composable<Screens.OnBoardingScreen> {
+        OnBoardingScreen(navController, viewModel,navigateToHome = navigateToHome)
     }
 }
 
-fun NavGraphBuilder.homeScreen(navController: NavController) {
-    composable<Screens.HomeScreen>(
-    ) {
+fun NavGraphBuilder.homeScreen(
+    navController: NavController
+) {
+    composable<Screens.HomeScreen> {
         HomeScreen(navController)
     }
 }
 
 fun NavGraphBuilder.profileScreen(
-    naveController: NavController,
-    viewModel: ProfileViewModel,
+    naveController: NavController
 ) {
     composable<Screens.ProfileScreen>(exitTransition = {
         fadeOut(animationSpec = tween(durationMillis = 300, delayMillis = 200))
     }
+
     ) {
+        val viewModel: ProfileViewModel = koinViewModel()
         ProfileScreen(naveController, viewModel)
     }
 }

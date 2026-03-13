@@ -71,6 +71,7 @@ import org.koin.androidx.compose.koinViewModel
 fun OnBoardingScreen(
     navController: NavController,
     viewModel: MainViewModel = koinViewModel(),
+    navigateToHome: () -> Unit
 ) {
 
     val uiState by viewModel.uiStateFlow.collectAsState()
@@ -282,11 +283,7 @@ fun OnBoardingScreen(
                             else -> {
                                 events(UserEvent.IsUserLoggedIn(true))
                                 events(UserEvent.SaveUserData)
-                                navController.navigate(Screens.HomeScreen) {
-                                    popUpTo(Screens.OnBoardingScreen){
-                                        inclusive = true
-                                    }
-                                }
+                               navigateToHome()
                             }
                         }
                     }
@@ -305,12 +302,5 @@ fun OnBoardingScreen(
     }
 }
 
-@Composable
-@Preview
-fun OmBoardingPreviewScreen() {
-    val navController = rememberNavController()
-
-    OnBoardingScreen(navController)
-}
 
 
